@@ -20,6 +20,7 @@
       ";
     }
   }
+  $products = query("SELECT * FROM products");      
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -97,10 +98,10 @@
         <div class="row no-gutters slider-text align-items-center justify-content-center">
           <div class="col-md-9 ftco-animate text-center">
             <h1 class="mb-0 bread">ADMIN PANEL</h1>
-            <p class="breadcrumbs"><a href="index.php">Orders</a>   <a href="#">Products</a>   <a href="#">History</a>   <a href="logout.php">Logout</a></p>
-            <p class="breadcrumbs"><span>Alamat</span></p>
-            <p class="breadcrumbs"><span>Nomor HP</span></p>
-            <p class="breadcrumbs"><span>Email</span></p>
+            <p class="breadcrumbs"><a href="#orders">Orders</a>   <a href="#inputproduct">Input Product</a>   <a href="#products">Products</a>   <a href="#history">History</a>   <a href="logout.php">Logout</a></p>
+            <p class="breadcrumbs"><span>Barang belum diambil</span></p>
+            <p class="breadcrumbs"><span>Barang belum dikembalikan</span></p>
+            <p class="breadcrumbs"><span>Transaksi sukses</span></p>
           </div>
         </div>
       </div>
@@ -109,7 +110,7 @@
 		<section class="ftco-section ftco-cart">
 			<div class="container">
 				<div class="row">
-    			<div class="col-md-12 ftco-animate">
+    			<div class="col-md-12 ftco-animate" id="orders">
     				<div class="cart-list">
 	    				<table class="table">
 						    <thead class="thead-primary">
@@ -162,7 +163,8 @@
 		<section class="ftco-section ftco-cart">
 			<div class="container">
 				<div class="row" >
-					<div class="col-md-6">
+          <div class="col-md-3"></div>
+					<div class="col-md-6" id="inputproduct">
 					<form action="" method="POST" enctype="multipart/form-data">
 							<h3>Input product</h3>
 							<div class="form-group">
@@ -181,7 +183,7 @@
     						<input type="number" name="product-quantity-m" placeholder="M Size Quantity" class="form-control input-lg" style="padding: 0">
     						</div>
     						<div class="form-group">
-    						<input type="number" name="product-quantity-l" placeholder="X Size Quantity" class="form-control input-lg" style="padding: 0">
+    						<input type="number" name="product-quantity-l" placeholder="L Size Quantity" class="form-control input-lg" style="padding: 0">
     						</div>
     						<div class="form-group">
     						<input type="number" name="product-quantity-xl" placeholder="XL Size Quantity" class="form-control input-lg" style="padding: 0">
@@ -191,42 +193,41 @@
     						</div>
     							<button type="submit" name="insert" style="float:right;margin:0;border: 1px solid #964B00;padding: 0px 30px">INPUT</button>
     				</form>
-    				</div>	
-    			<div class="col-md-12 ftco-animate"	style="padding-top: 3rem;">
+    				</div>
+            
+    			<div class="col-md-12 ftco-animate"	style="padding-top: 3rem;" id="products">
     				<div class="cart-list">
 	    				<table class="table">
 						    <thead class="thead-primary">
 						      <tr class="text-center">
 						        <th>&nbsp;</th>
-						        <th>&nbsp;</th>
 						        <th>Product</th>
 						        <th>Price</th>
 						        <th>Quantity</th>
-						        <th>Harga</th>
 						      </tr>
 						    </thead>
 						    <tbody>
+                
+                  <?php foreach ($products as $product):?>
 						      <tr class="text-center">
-						        <td class="product-remove"><a href="#">edit</a></td>
 						        
-						        <td class="image-prod"><div class="img" style="background-image:url(images/product-4.jpg);"></div></td>
+						        <td class="image-prod"><div class="img" style="background-image:url(images/<?= $product['image']?>);"></div></td>
 						        
 						        <td class="product-name">
-						        	<h3>Young Woman Wearing Dress</h3>
-						        	<p>Far far away, behind the word mountains, far from the countries</p>
+						        	<h3><?= $product['product_name']?></h3>
+						        	<p><?= $product['product_bio']?></p>
 						        </td>
 						        
-						        <td class="price">$15.70</td>
+						        <td class="price">IDR <?= $product['product_price']?></td>
 						        
 						        <td class="quantity">
-						        	<p>S 1</p>
-						        	<p>M 1</p>
-						        	<p>X 1</p>
-						        	<p>L 1</p>
+						        	<p>S <?= $product['product_quantity_s']?></p>
+						        	<p>M <?= $product['product_quantity_m']?></p>
+						        	<p>L <?= $product['product_quantity_l']?></p>
+						        	<p>XL <?= $product['product_quantity_xl']?></p>
 						        	
 					          </td>
-						        
-						        <td class="total">$15.70</td>
+                  <?php endforeach; ?>
 						      </tr><!-- END TR-->
 						    </tbody>
 						  </table>
@@ -239,7 +240,7 @@
     <section class="ftco-section ftco-cart">
       <div class="container">
         <div class="row">
-          <div class="col-md-12 ftco-animate">
+          <div class="col-md-12 ftco-animate" id="history">
             <div class="cart-list">
               <table class="table">
                 <thead class="thead-primary">

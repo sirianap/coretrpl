@@ -1,46 +1,42 @@
 <?php 
-session_start();
-if(isset($_SESSION["login"])){
-  header("Location: index.php");
-  exit;
-}
-require 'functions.php';
- 
-if( isset($_POST["submitreg"])) {
-  if(register($_POST)>0){
-    header("Location: index.php");
-    echo "
+  session_start();
+  require 'functions.php';
+  $id = $_GET['product_id'];
+  $query = "SELECT * FROM products WHERE product_id='$id'";
+  $result = mysqli_query($db_users,$query);
+  $product = mysqli_fetch_assoc($result);
+  //var_dump($product);
+  $product_name = $product['product_name'];
+  $product_bio = $product['product_bio'];
+  $product_price = $product['product_price'];
+  $product_id = $product['product_id'];
+  $image = $product['image'];
+  if(isset($_POST['rent'])){
+    if(!isset($_SESSION['user'])){
+      echo "<script>alert('Harap login!');</script>";
+      header("Location: login.php");
+      exit;
+    }
+    $user = $_SESSION['user'];
+    if(cart($_POST)){
+      echo " 
       <script>
-        alert('Registrasi berhasil!');
+        alert('Berhasil ditambah ke keranjang');
       </script>
-    ";
+
+      ";
+    }
+    else
+      echo " GAGAL
+      ";
   }
-  else 
-    echo "
-      <script>
-        alert('Registrasi gagal!');
-      </script>
-  ";
-}
-if( isset($_POST["submit"])) {
-  if(login($_POST)>0){
-    header("Location: index.php");
-  }
-  else 
-    echo "
-      <script>
-        alert('Password salah!');
-      </script>
-  ";
-}
+  //var_dump(mysqli_affected_rows($db_root));
 ?>
 <!DOCTYPE html>
-<html>
-<head>
-	<title>
-		Login
-	</title>
-	<meta charset="utf-8">
+<html lang="en">
+  <head>
+    <title>Coret</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
@@ -64,9 +60,10 @@ if( isset($_POST["submit"])) {
     <link rel="stylesheet" href="css/flaticon.css">
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-	 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+  </head>
+  <body>
+
+     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
       <div class="container">
         <a class="navbar-brand" href="index.php"> Costum Rental</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,73 +92,81 @@ if( isset($_POST["submit"])) {
         </div>
       </div>
     </nav>
-	  <!-- End Nav-->
-	  <section class="ftco-section" style="padding-bottom:4em;">
-	  <div class="container-fluid" style="background-image: url('images/bg_1(2).jpg');">
-    <div class="container" style="padding-top: 2em;padding-bottom: 2em;">
-      <h2 class="text-center" id="title">Costum Rental</h2>
-       <p class="text-center">
-        <small id="passwordHelpInline" class="text-muted"> 
-          For your event needs.
-        </small>
-      </p>
-      
-      <div class="row">
-        <div class="col-md-5">
-          <h3 >Sign Up! </h3>
-          <form action="" method=POST>
-              <div class="form-group">
-                <input type="text" name="usernamereg" id="usernamereg" class="form-control input-lg" placeholder="Username">
-              </div>
-              <div class="form-group">
-                <input type="email" name="emailreg" id="emailreg" class="form-control input-lg" placeholder="Email">
-              </div>
-              <div class="form-group">
-                <input type="text" name="nomorhp" id="nomorhp" class="form-control input-lg" placeholder="Nomor HP">
-              </div>
-              <div class="form-group">
-                <input type="text" name="alamat" id="alamat" class="form-control input-lg" placeholder="Alamat lengkap">
-              </div>
-              <div class="form-group">
-                <input type="password" name="passwordreg" id="passwordreg" class="form-control input-lg" placeholder="Password">
-              </div>
-              <div class="form-group">
-                <input type="password" name="passwordreg2" id="passwordreg2" class="form-control input-lg" placeholder="Password confirmation">
-              </div>
-              <div>
-                <button type="submit" name="submitreg" style="float: right;">Sign Up</button>
-              </div>
-          </form>
-        </div>
-        
-        <div class="col-md-2">
-          <!-------null------>
-        </div>
-        
-        <div class="col-md-5">
-            <form action="" method="POST"> 
-              <h3>Login </h3>
-              <div class="form-group">
-                <input type="text" name="username" id="username" class="form-control input-lg" placeholder="Username">
-              </div>
-              <div class="form-group">
-                <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password">
-              </div>
-              <div>
-                <button type="submit" name="submit" style="float: right;">Login</button>
-              </div>
-        </form> 
+    <!-- END nav -->
+		
+		<!-- <div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
+      <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+          <div class="col-md-9 ftco-animate text-center">
+            <h1 class="mb-0 bread">Product Single</h1>
+            <p class="breadcrumbs"><span class="mr-2"><a href="index.php">Home</a></span> <span class="mr-2"><a href="shop.html">Shop</a></span></p>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-	</section>
-	<footer class="ftco-footer bg-light ftco-section" style="padding-top: 4em;">
+    </div> -->
+		
+		<section class="ftco-section bg-light">
+    	<div class="container">
+    		<div class="row">
+    			<div class="col-lg-6 mb-5 ftco-animate">
+    				<a href="images/menu-2.jpg" class="image-popup"><img class="img-fluid" src="images/<?php echo "$image" ?>" alt="<?php echo "$name" ?>" style="height:100%;width: 100% "></a>
+    			</div>
+    			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
+    				<h3><?php echo "$product_name" ?></h3>
+    				<p class="price"><span>IDR  <?php echo "$product_price" ?></span></p>
+    				<p><?php echo"$product_bio" ?></p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <form action="" method="POST">
+            <div class="row mt-4">
+							<div class="col-md-6">
+								<div class="form-group d-flex">
+                  <input type="hidden" name="product_id" value="<?php echo "$product_id" ?>"/>
+                  <input type="hidden" name="username" value="<?php echo "$user" ?>"/>
+		              <div class="select-wrap">
+	                  <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+	                  <select name="size" id="" class="form-control">
+	                  	<option value="s">Small</option>
+	                    <option value="m">Medium</option>
+	                    <option value="l">Large</option>
+	                    <option value="xl">Extra Large</option>
+	                  </select>
+	                </div>
+		            </div>
+							</div>
+							<div class="w-100"></div>
+							<div class="input-group col-md-6 d-flex mb-3">
+	             	<span class="input-group-btn mr-2">
+	                	<button type="button" class="quantity-left-minus btn"  data-type="minus" data-field="">
+	                   <i class="ion-ios-remove"></i>
+	                	</button>
+	            		</span>
+	             	<input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+	             	<span class="input-group-btn ml-2">
+	                	<button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+	                     <i class="ion-ios-add"></i>
+	                 </button>
+	             	</span>
+	          	</div>
+            </div>
+                <button type="submit" name="rent" class="btnaing">Rent This!</button>
+              </form>
+          	
+    			</div>
+    		</div>
+    	</div>
+    </section>
+
+    <footer class="ftco-footer bg-light ftco-section">
       <div class="container">
         <div class="row mb-5">
           <div class="col-md">
             <div class="ftco-footer-widget mb-4">
-              <h2 class="ftco-heading-2">Costum Rent</h2>
+              <h2 class="ftco-heading-2">Modist</h2>
               <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
                 <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
                 <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
@@ -210,9 +215,7 @@ if( isset($_POST["submit"])) {
             </div>
           </div>
         </div>
-	<!--Loader -->
-
-	<div class="row">
+        <div class="row">
           <div class="col-md-12 text-center">
 
             <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
@@ -220,8 +223,16 @@ if( isset($_POST["submit"])) {
 						  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 						</p>
           </div>
-    </div>
-    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+        </div>
+      </div>
+    </footer>
+    
+  
+
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script src="js/popper.min.js"></script>
@@ -238,5 +249,43 @@ if( isset($_POST["submit"])) {
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
   <script src="js/google-map.js"></script>
   <script src="js/main.js"></script>
-</body>
+
+  <script>
+		$(document).ready(function(){
+
+		var quantitiy=0;
+		   $('.quantity-right-plus').click(function(e){
+		        
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		            
+		            $('#quantity').val(quantity + 1);
+
+		          
+		            // Increment
+		        
+		    });
+
+		     $('.quantity-left-minus').click(function(e){
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		      
+		            // Increment
+		            if(quantity>0){
+		            $('#quantity').val(quantity - 1);
+		            }
+		    });
+		    
+		});
+	</script>
+    
+  </body>
 </html>

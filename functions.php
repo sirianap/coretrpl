@@ -1,10 +1,11 @@
 <?php 
 
 $db_root = mysqli_connect('localhost','root','','coretrpl');
-$db_users = $db_root = mysqli_connect('localhost','root','','coretrpl');
+$db_users = mysqli_connect('localhost','root','','coretrpl');
 
 function query($query){
-	$result = mysqli_query($conn, $query);
+  global $db_root;
+	$result = mysqli_query($db_root, $query);
 	$rows = [];
 	while( $row = mysqli_fetch_assoc($result)){
 		$rows[]= $row;
@@ -98,6 +99,7 @@ function uploadgambar(){
   $namaFileBaru = uniqid();
   $namaFileBaru .= '.';
   $namaFileBaru .= $ekstensiGambar;
+  
   move_uploaded_file($tmpName, 'images/'.$namaFileBaru);
   return $namaFileBaru;
 }
@@ -115,12 +117,26 @@ function tambah($data){
 
   $query = "INSERT INTO products
               VALUES
-              ('','$productname','$productbio','$productprice','$productquantitys','$productquantitym','productquantityl','productquantityxl','$gambar')
+              ('','$productname','$productbio','$productprice','$productquantitys','$productquantitym','$productquantityl','$productquantityxl','$gambar')
             ";
   $result = mysqli_query($db_root,$query);
-  if(mysqli_affected_rows($result)){
-    return 1;
+  return mysqli_affected_rows($db_root);
+}
+function cart($data){
+  global $db_root;
+  if(!isset($_SESSION['user'])){
+    return 0;
   }
-  else return 0;
+  $product_id = $data['product_id'];
+  $user_id = $_SESSION["user"];
+  $size = $data['size'];
+  $quantity = $data['quantity'];
+  $status = "CART";
+  $query = "INSERT INTO orders
+              VALUES
+              ('','$user_id','$product_id','$quantity','$size','$status');
+            ";
+  $result = mysqli_query($db_root,$query);
+  return mysqli_affected_rows($db_root);
 }
 ?>

@@ -6,11 +6,19 @@
     exit;
   }
   $user = $_SESSION['user'];
+  $query = "SELECT * FROM users WHERE username='$user'";
+  $userinfo = mysqli_query($db_users,$query);
+  //var_dump($userinfo);
+  $user = mysqli_fetch_assoc($userinfo);
+  $username = $user['username'];
+  $alamat = $user['alamat'];
+  $nomorhp = $user['nomorhp'];
+  $email = $user['email'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Mine</title>
+    <title>Profile</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
@@ -48,18 +56,9 @@
         <div class="collapse navbar-collapse" id="ftco-nav">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item active"><a href="index.php" class="nav-link">Home</a></li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown04">
-                <a class="dropdown-item" href="shop.html">Shop</a>
-                <a class="dropdown-item" href="product-single.html">Single Product</a>
-                <a class="dropdown-item" href="cart.html">Cart</a>
-                <a class="dropdown-item" href="checkout.html">Checkout</a>
-              </div>
-            </li>
-            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-            <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-            <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            <li class="nav-item"><a href="shop.php" class="nav-link">Shop</a></li>
+            <li class="nav-item"><a href="index.php#bio" class="nav-link">About</a></li>
+            <li class="nav-item"><a href="index.php#kontak" class="nav-link">Contact</a></li>
             <li class="nav-item cta cta-colored"><a href=<?php  if (isset($_SESSION['login'])) {
         echo "profile.php";
       } 
@@ -82,16 +81,18 @@
       <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
           <div class="col-md-9 ftco-animate text-center">
-            <h1 class="mb-0 bread"><?php echo "$user" ?></h1>
+            <h1 class="mb-0 bread"><?php echo "$username" ?></h1>
             <p class="breadcrumbs"><span><a href="index.php">Edit profile</a></span> <span>Cart</span> <span>History</span><span><a href="logout.php">Logout</a></span></p>
             <p class="breadcrumbs"><span>Alamat</span></p>
+            <p class="breadcrumbs"><span><?php echo "$alamat"?></span></p>
             <p class="breadcrumbs"><span>Nomor HP</span></p>
-            <p class="breadcrumbs"><span>Email</span></p>
+            <p class="breadcrumbs"> <span><?php echo "$nomorhp"?></span></p>
+            <p class="breadcrumbs"> <span>Email</span></p>
+            <p class="breadcrumbs"> <span><?php echo "$email"?></span></p>
           </div>
         </div>
       </div>
     </div>
-		
 		<section class="ftco-section ftco-cart">
 			<div class="container">
 				<div class="row">
@@ -105,7 +106,7 @@
 						        <th>Product</th>
 						        <th>Price</th>
 						        <th>Quantity</th>
-						        <th>Total</th>
+						        <th></th>
 						      </tr>
 						    </thead>
 						    <tbody>
@@ -127,36 +128,11 @@
 					          	</div>
 					          </td>
 						        
-						        <td class="total">$15.70</td>
+						        <td class="total"><button class="btnaing">BOOKING</button></td>
 						      </tr><!-- END TR-->
 						    </tbody>
 						  </table>
 					  </div>
-    			</div>
-    		</div>
-    		<div class="row justify-content-end">
-    			<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
-    				<div class="cart-total mb-3">
-    					<h3>Cart Totals</h3>
-    					<p class="d-flex">
-    						<span>Subtotal</span>
-    						<span>$20.60</span>
-    					</p>
-    					<p class="d-flex">
-    						<span>Delivery</span>
-    						<span>$0.00</span>
-    					</p>
-    					<p class="d-flex">
-    						<span>Discount</span>
-    						<span>$3.00</span>
-    					</p>
-    					<hr>
-    					<p class="d-flex total-price">
-    						<span>Total</span>
-    						<span>$17.60</span>
-    					</p>
-    				</div>
-    				<p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
     			</div>
     		</div>
 			</div>

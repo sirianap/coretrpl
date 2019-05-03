@@ -1,6 +1,7 @@
 <?php 
 	session_start();
 	require 'functions.php';
+	$products = query("SELECT * FROM products");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,28 +35,19 @@
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-	    <div class="container">
-	      <a class="navbar-brand" href="index.php"> Costum Rental</a>
-	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-	        <span class="oi oi-menu"></span> Menu
-	      </button>
+      <div class="container">
+        <a class="navbar-brand" href="index.php"> Costum Rental</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="oi oi-menu"></span> Menu
+        </button>
 
-	      <div class="collapse navbar-collapse" id="ftco-nav">
-	        <ul class="navbar-nav ml-auto">
-	          <li class="nav-item active"><a href="index.php" class="nav-link">Home</a></li>
-	          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown04">
-              	<a class="dropdown-item" href="shop.html">Shop</a>
-                <a class="dropdown-item" href="product-single.html">Single Product</a>
-                <a class="dropdown-item" href="cart.html">Cart</a>
-                <a class="dropdown-item" href="checkout.html">Checkout</a>
-              </div>
-            </li>
-	          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-	          <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-	          <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-	          <li class="nav-item cta cta-colored"><a href=<?php  if (isset($_SESSION['login'])) {
+        <div class="collapse navbar-collapse" id="ftco-nav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active"><a href="index.php" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="shop.php" class="nav-link">Shop</a></li>
+            <li class="nav-item"><a href="index.php#bio" class="nav-link">About</a></li>
+            <li class="nav-item"><a href="index.php#kontak" class="nav-link">Contact</a></li>
+            <li class="nav-item cta cta-colored"><a href=<?php  if (isset($_SESSION['login'])) {
         echo "profile.php";
       } 
       else
@@ -67,13 +59,13 @@
         echo "Login";
       ?></a></li>
 
-	        </ul>
-	      </div>
-	    </div>
-	  </nav>
+          </ul>
+        </div>
+      </div>
+    </nav>
     <!-- END nav -->
 		
-		<div class="hero-wrap js-fullheight" style="background-image: url('images/bg_1.jpg');">
+		<div class="hero-wrap js-fullheight" style="background-image: url('images/bg_6.jpg');">
       <div class="overlay"></div>
       <div class="container">
         <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center">
@@ -98,179 +90,73 @@
     	<div class="container">
     		<div class="row justify-content-center mb-3 pb-3">
           <div class="col-md-12 heading-section text-center ftco-animate">
-          	<h1 class="big">Trending</h1>
-            <h2 class="mb-4">Trending</h2>
+          	<h1 class="big">Etalase</h1>
+            <h2 class="mb-4">Etalase</h2>
           </div>
         </div>
     		<div class="row">
     			<div class="col-md-12">
     				<div class="product-slider owl-carousel ftco-animate">
+    					<?php foreach ($products as $product):?>
+          				<?php
+            				$name = $product['product_name'];
+            				$bio = $product['product_bio'];
+            				$price = $product['product_price'];
+            				$image = $product['image'];
+            				$product_id = $product['product_id'];
+            			?>
     					<div class="item">
 		    				<div class="product">
-		    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-1.jpg" alt="Colorlib Template">
-		    						<span class="status">30%</span>
+		    					<a href="product-single.php?product_id=<?php echo "$product_id" ?>" class="img-prod"><img class="img-fluid" src="images/<?php echo "$image" ?>" alt="<?php echo "$name" ?>" style="height:470px;width: 100% ">
 		    					</a>
 		    					<div class="text pt-3 px-3">
-		    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
+		    						<h3><a href="#"><?php echo "$name" ?></a></h3>
 		    						<div class="d-flex">
 		    							<div class="pricing">
-			    							<p class="price"><span class="mr-2 price-dc">$120.00</span><span class="price-sale">$80.00</span></p>
-			    						</div>
-			    						<div class="rating">
-			    							<p class="text-right">
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    							</p>
+			    							<p class="price"><span class="price-sale">IDR <?php echo "$price"?></span></p>
 			    						</div>
 		    						</div>
 		    					</div>
 		    				</div>
 	    				</div>
-	    				<div class="item">
-		    				<div class="product">
-		    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-2.jpg" alt="Colorlib Template"></a>
-		    					<div class="text pt-3 px-3">
-		    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-		    						<div class="d-flex">
-		    							<div class="pricing">
-				    						<p class="price"><span>$120.00</span></p>
-				    					</div>
-				    					<div class="rating">
-			    							<p class="text-right">
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    							</p>
-			    						</div>
-			    					</div>
-		    					</div>
-		    				</div>
-	    				</div>
-	    				<div class="item">
-		    				<div class="product">
-		    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-3.jpg" alt="Colorlib Template"></a>
-		    					<div class="text pt-3 px-3">
-		    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-		    						<div class="d-flex">
-		    							<div class="pricing">
-				    						<p class="price"><span>$120.00</span></p>
-				    					</div>
-				    					<div class="rating">
-			    							<p class="text-right">
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    							</p>
-			    						</div>
-			    					</div>
-		    					</div>
-		    				</div>
-	    				</div>
-	    				<div class="item">
-		    				<div class="product">
-		    					<a href="#" class="img-prod"><img class="img-fluid" src="images/product-4.jpg" alt="Colorlib Template"></a>
-		    					<div class="text pt-3 px-3">
-		    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-		    						<div class="d-flex">
-		    							<div class="pricing">
-				    						<p class="price"><span>$120.00</span></p>
-				    					</div>
-				    					<div class="rating">
-			    							<p class="text-right">
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    							</p>
-			    						</div>
-			    					</div>
-		    					</div>
-		    				</div>
-	    				</div>
-	    				<div class="item">
-		    				<div class="product">
-		    					<a href="#" class="img-prod"><img src="images/product-5.jpg" alt="Colorlib Template">
-			    					<span class="status">30%</span>
-			    				</a>
-		    					<div class="text pt-3 px-3">
-		    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-		    						<div class="d-flex">
-		    							<div class="pricing">
-			    							<p class="price"><span class="mr-2 price-dc">$120.00</span><span class="price-sale">$80.00</span></p>
-			    						</div>
-			    						<div class="rating">
-			    							<p class="text-right">
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    							</p>
-			    						</div>
-		    						</div>
-		    					</div>
-		    				</div>
-	    				</div>
-	    				<div class="item">
-		    				<div class="product">
-		    					<a href="#" class="img-prod"><img src="images/product-6.jpg" alt="Colorlib Template"></a>
-		    					<div class="text pt-3 px-3">
-		    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-		    						<div class="d-flex">
-		    							<div class="pricing">
-				    						<p class="price"><span>$120.00</span></p>
-				    					</div>
-				    					<div class="rating">
-			    							<p class="text-right">
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    								<span class="ion-ios-star-outline"></span>
-			    							</p>
-			    						</div>
-			    					</div>
-		    					</div>
-		    				</div>
-	    				</div>
+	    			<?php endforeach; ?>
     				</div>
     			</div>
     		</div>
     	</div>
     </section>
 
-    <section class="ftco-section ftco-no-pb ftco-no-pt bg-light">
+    <section class="ftco-section ftco-no-pb ftco-no-pt bg-light" id="bio">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-5 p-md-5 img img-2 d-flex justify-content-center align-items-center" style="background-image: url(images/bg_2.jpg);">
-						<a href="https://vimeo.com/45830194" class="icon popup-vimeo d-flex justify-content-center align-items-center">
-							<span class="icon-play"></span>
-						</a>
+					<div class="col-md-5 p-md-5 img img-2 d-flex justify-content-center align-items-center" style="background-image: url(images/coret.jpg);">
 					</div>
 					<div class="col-md-7 py-5 wrap-about pb-md-5 ftco-animate">
 	          <div class="heading-section-bold mb-5 mt-md-5">
 	          	<div class="ml-md-0">
-		            <h2 class="mb-4">Modist <br>Online <br> <span>Fashion Shop</span></h2>
+		            <h2 class="mb-4">Costum <br>Rental <br> <span>Firts Rent Portal</span></h2>
 	            </div>
 	          </div>
 	          <div class="pb-md-5">
-							<p>On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word "and" and the Little Blind Text should turn around and return to its own, safe country. But nothing the copy said could convince her and so it didn’t take long until a few insidious Copy Writers ambushed her, made her drunk with Longe and Parole and dragged her into their agency, where they abused her for their.</p>
-							<p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she continued her way.</p>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 
-    <section class="ftco-section bg-light">
+    <!-- <section class="ftco-section bg-light">
     	<div class="container">
 				<div class="row justify-content-center mb-3 pb-3">
           <div class="col-md-12 heading-section text-center ftco-animate">
@@ -391,9 +277,9 @@
     			</div>
     		</div>
     	</div>
-    </section>
+    </section> -->
 
-    <section class="ftco-section ftco-section-more img" style="background-image: url(images/bg_5.jpg);">
+    <!-- <section class="ftco-section ftco-section-more img" style="background-image: url(images/bg_5.jpg);">
     	<div class="container">
     		<div class="row justify-content-center mb-3 pb-3">
           <div class="col-md-12 heading-section ftco-animate">
@@ -401,9 +287,9 @@
           </div>
         </div>
     	</div>
-    </section>
+    </section> -->
 
-    <section class="ftco-section testimony-section bg-light">
+    <!-- <section class="ftco-section testimony-section bg-light">
       <div class="container">
 				<div class="row justify-content-center mb-3 pb-3">
           <div class="col-md-12 heading-section text-center ftco-animate">
@@ -491,10 +377,10 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
 
-    <section class="ftco-section">
+    <!-- <section class="ftco-section">
       <div class="container">
         <div class="row justify-content-center mb-3 pb-3">
           <div class="col-md-12 heading-section text-center ftco-animate">
@@ -547,9 +433,9 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
-    <section class="ftco-section ftco-counter img" id="section-counter" style="background-image: url(images/bg_4.jpg);">
+    <!-- <section class="ftco-section ftco-counter img" id="section-counter" style="background-image: url(images/bg_4.jpg);">
     	<div class="container">
     		<div class="row justify-content-center py-5">
     			<div class="col-md-10">
@@ -590,9 +476,9 @@
 	        </div>
         </div>
     	</div>
-    </section>
+    </section> -->
 
-    <section class="ftco-section bg-light ftco-services">
+    <!-- <section class="ftco-section bg-light ftco-services">
     	<div class="container">
     		<div class="row justify-content-center mb-3 pb-3">
           <div class="col-md-12 heading-section text-center ftco-animate">
@@ -637,8 +523,8 @@
         </div>
     	</div>
     </section>
-		
-		<section class="ftco-section-parallax">
+ -->		
+		<!-- <section class="ftco-section-parallax">
       <div class="parallax-img d-flex align-items-center">
         <div class="container">
           <div class="row d-flex justify-content-center py-5">
@@ -659,14 +545,14 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
-    <footer class="ftco-footer bg-light ftco-section">
+    <footer class="ftco-footer bg-light ftco-section" id="kontak">
       <div class="container">
         <div class="row mb-5">
           <div class="col-md">
             <div class="ftco-footer-widget mb-4">
-              <h2 class="ftco-heading-2">Modist</h2>
+              <h2 class="ftco-heading-2">Costum Rental</h2>
               <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
                 <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
                 <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
