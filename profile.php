@@ -5,6 +5,32 @@
     header("Location: login.php");
     exit;
   }
+  if(isset($_POST['hapus'])){
+    if (hapuscart($_POST)>0) {
+      echo " <script>
+        alert('Orderan berhasil dihapus');
+      </script>
+      ";
+    }
+    else
+     echo " <script>
+        alert('Orderan tidak berhasil dihapus');
+      </script>
+      ";
+  }
+  if(isset($_POST['book'])){
+    if (booking($_POST)>0) {
+      echo " <script>
+        alert('Orderan berhasil dibooking');
+      </script>
+      ";
+    }
+    else
+     echo " <script>
+        alert('Orderan tidak berhasil dibooking');
+      </script>
+      ";
+  }
   $user = $_SESSION['user'];
   $query = "SELECT * FROM users WHERE username='$user'";
   $userinfo = mysqli_query($db_users,$query);
@@ -14,6 +40,11 @@
   $alamat = $user['alamat'];
   $nomorhp = $user['nomorhp'];
   $email = $user['email'];
+  $ordersc = query("SELECT * FROM orders WHERE username='username' && status='CART'");
+  $ordersb = query("SELECT * FROM orders WHERE username='username' && status='BELUM DIAMBIL'");
+  $orderss = query("SELECT * FROM orders WHERE username='username' && status='BELUM DIKEMBALIKAN'");
+  $history = query("SELECT * FROM orders WHERE username='username' && status='SUKSES'");
+  
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,9 +111,11 @@
 		<div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
       <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
+          <div class="col-md-11 ftco-animate text-center">
+            <h1><?php echo "$username" ?></h1>
+          </div>
           <div class="col-md-9 ftco-animate text-center">
-            <h1 class="mb-0 bread"><?php echo "$username" ?></h1>
-            <p class="breadcrumbs"><span><a href="index.php">Edit profile</a></span> <span>Cart</span> <span>History</span><span><a href="logout.php">Logout</a></span></p>
+            <p class="breadcrumbs"><span><a href="#cart">Cart</a></span>    <a href="#history">History</a></span>    <span><a href="logout.php">Logout</a></span></p>
             <p class="breadcrumbs"><span>Alamat</span></p>
             <p class="breadcrumbs"><span><?php echo "$alamat"?></span></p>
             <p class="breadcrumbs"><span>Nomor HP</span></p>
@@ -93,7 +126,8 @@
         </div>
       </div>
     </div>
-		<section class="ftco-section ftco-cart">
+
+		<section class="ftco-section ftco-cart" id="cart">
 			<div class="container">
 				<div class="row">
     			<div class="col-md-12 ftco-animate">
@@ -110,26 +144,44 @@
 						      </tr>
 						    </thead>
 						    <tbody>
+                  <?php foreach ($ordersc as $order):?>
+                  <?php
+                    $product_id = $order['product_id'];
+                    $query = "SELECT * FROM products WHERE product_id='$product_id'";
+                    $result = mysqli_query($db_users,$query);
+                    $product = mysqli_fetch_assoc($result);
+                    $order_id = $order['order_id'];
+                    $product_name = $product['product_name'];
+                    $product_bio = $product['product_bio'];
+                    $product_price = $product['product_price'];
+                    $quantity = $order['quantity'];
+                  ?>
+                  <form action="" method="POST">
 						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
+						        <td class="product-remove"><button class="btnaing" name="hapus">HAPUS</button></td>
+                    <input type="hidden" name="order_id" value="<?php echo "$order_id" ?>"/>
 						        
-						        <td class="image-prod"><div class="img" style="background-image:url(images/product-4.jpg);"></div></td>
+						        <td class="image-prod"><div class="img" style="background-image:url(images/<?= $product['image']?>);"></div></td>
 						        
 						        <td class="product-name">
-						        	<h3>Young Woman Wearing Dress</h3>
-						        	<p>Far far away, behind the word mountains, far from the countries</p>
+						        	<h3><?= $product['product_name']?></h3>
+						        	<p><?= $product['product_bio']?></p>
 						        </td>
-						        
-						        <td class="price">$15.70</td>
+						        <input type="hidden" name="product_id" value="<?php echo "$product_id" ?>"/>
+                    <input type="hidden" name="username" value="<?php echo "$username" ?>"/>
+						        <td class="price">IDR <?= $product['product_price']?></td>
 						        
 						        <td class="quantity">
 						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
+					             	<input type="text" name="quantity" class="quantity form-control input-number" min="1" max="100" value="<?php echo "$quantity" ?>">
 					          	</div>
 					          </td>
 						        
-						        <td class="total"><button class="btnaing">BOOKING</button></td>
-						      </tr><!-- END TR-->
+						        <td class="total"><button class="btnaing" name="book">BOOKING</button></td>
+						      </tr>
+                  </form>
+                  <?php endforeach; ?>
+                  <!-- END TR-->
 						    </tbody>
 						  </table>
 					  </div>
@@ -138,7 +190,122 @@
 			</div>
 		</section>
 
-    <section class="ftco-section ftco-cart">
+    <section class="ftco-section ftco-cart" id="belum">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 ftco-animate" >
+            <div class="cart-list">
+              <table class="table">
+                <thead class="thead-primary">
+                  <tr class="text-center">
+                    <th>Belum diambil</th>
+                    <th>&nbsp;</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($ordersb as $order):?>
+                  <?php
+                    $product_id = $order['product_id'];
+                    $query = "SELECT * FROM products WHERE product_id='$product_id'";
+                    $result = mysqli_query($db_users,$query);
+                    $product = mysqli_fetch_assoc($result);
+                    $order_id = $order['order_id'];
+                    $product_name = $product['product_name'];
+                    $product_bio = $product['product_bio'];
+                    $product_price = $product['product_price'];
+                    $quantity = $order['quantity'];
+                  ?>
+                  <tr class="text-center">
+                    <!-- <td class="product-remove"><button class="btnaing" name="hapus">HAPUS</button></a></td>
+                    <input type="hidden" name="order_id" value="<?php echo "$order_id" ?>"/> -->
+                    <td><br></td>
+                    <td class="image-prod"><div class="img" style="background-image:url(images/<?= $product['image']?>);"></div></td>
+                    
+                    <td class="product-name">
+                      <h3><?= $product['product_name']?></h3>
+                      <p><?= $product['product_bio']?></p>
+                    </td>
+                    <!-- <input type="hidden" name="product_id" value="<?php echo "$product_id" ?>"/>
+                    <input type="hidden" name="username" value="<?php echo "$username" ?>"/> -->
+                    <td class="price">IDR <?= $product['product_price']?></td>
+                    
+                    <td class="quantity">
+                      <?php echo "$quantity" ?>
+                    </td>
+                    <td><br></td>
+                    <!-- <td class="total"><button class="btnaing" name="book">BOOKING</button></td> -->
+                  </tr>
+                  <?php endforeach; ?>
+                  <!-- END TR-->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section ftco-cart" id="belumdikembalikan">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 ftco-animate" >
+            <div class="cart-list">
+              <table class="table">
+                <thead class="thead-primary">
+                  <tr class="text-center">
+                    <th>Belum dikembalikan</th>
+                    <th>&nbsp;</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($orderss as $order):?>
+                  <?php
+                    $product_id = $order['product_id'];
+                    $query = "SELECT * FROM products WHERE product_id='$product_id'";
+                    $result = mysqli_query($db_users,$query);
+                    $product = mysqli_fetch_assoc($result);
+                    $order_id = $order['order_id'];
+                    $product_name = $product['product_name'];
+                    $product_bio = $product['product_bio'];
+                    $product_price = $product['product_price'];
+                    $quantity = $order['quantity'];
+                  ?>
+                  <tr class="text-center">
+                    <!-- <td class="product-remove"><button class="btnaing" name="hapus">HAPUS</button></a></td>
+                    <input type="hidden" name="order_id" value="<?php echo "$order_id" ?>"/> -->
+                    <td><br></td>
+                    <td class="image-prod"><div class="img" style="background-image:url(images/<?= $product['image']?>);"></div></td>
+                    
+                    <td class="product-name">
+                      <h3><?= $product['product_name']?></h3>
+                      <p><?= $product['product_bio']?></p>
+                    </td>
+                    <!-- <input type="hidden" name="product_id" value="<?php echo "$product_id" ?>"/>
+                    <input type="hidden" name="username" value="<?php echo "$username" ?>"/> -->
+                    <td class="price">IDR <?= $product['product_price']?></td>
+                    
+                    <td class="quantity">
+                      <?php echo "$quantity" ?>
+                    </td>
+                    <td><br></td>
+                    <!-- <td class="total"><button class="btnaing" name="book">BOOKING</button></td> -->
+                  </tr>
+                  <?php endforeach; ?>
+                  <!-- END TR-->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="ftco-section ftco-cart" id="history">
       <div class="container">
         <div class="row">
           <div class="col-md-12 ftco-animate">
@@ -156,25 +323,40 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <?php foreach ($history as $order):?>
+                  <?php
+                    $product_id = $order['product_id'];
+                    $query = "SELECT * FROM products WHERE product_id='$product_id'";
+                    $result = mysqli_query($db_users,$query);
+                    $product = mysqli_fetch_assoc($result);
+                    $product_name = $product['product_name'];
+                    $product_bio = $product['product_bio'];
+                    $product_price = $product['product_price'];
+                    $order_quantity = $order['quantity'];
+                    $status = $order['status'];
+                    $total = $product_price * $order_quantity;
+                  ?>
                   <tr class="text-center">
                     <td class="product-remove"></td>
                     
-                    <td class="image-prod"><div class="img" style="background-image:url(images/product-4.jpg);"></div></td>
+                    <td class="image-prod"><div class="img" style="background-image:url(images/<?= $product['image']?>);"></div></td>
                     
                     <td class="product-name">
-                      <h3>Young Woman Wearing Dress</h3>
-                      <p>Far far away, behind the word mountains, far from the countries</p>
+                      <h3><?php echo "$product_name" ?></h3>
+                      <p><?php echo "$product_bio" ?></p>
                     </td>
                     
-                    <td class="price">$15.70</td>
+                    <td class="price">IDR <?php echo "$product_price" ?></td>
                     
                     <td class="quantity">
-                      1
+                      <?php echo "$order_quantity" ?>
                     </td>
                     
-                    <td class="total">$15.70</td>
-                    <td>Success</td>
-                  </tr><!-- END TR-->
+                    <td class="total">IDR <?php echo "$total" ?></td>
+                    <td><?php echo "$status" ?></td>
+                  </tr>
+                <?php endforeach;?>
+                  <!-- END TR-->
                 </tbody>
               </table>
             </div>

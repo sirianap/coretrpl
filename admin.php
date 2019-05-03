@@ -20,7 +20,38 @@
       ";
     }
   }
-  $products = query("SELECT * FROM products");      
+  if(isset($_POST['pengambilan'])){
+    if (pengambilan($_POST)>0) {
+      echo " <script>
+        alert('Pengambilan dikonfirmasi.');
+      </script>
+      ";
+    }
+    else
+     echo " <script>
+        alert('Pengambilan gagal dikonfirmasi');
+      </script>
+      ";
+  }
+  if(isset($_POST['pengembalian'])){
+    if (pengembalian($_POST)>0) {
+      echo " <script>
+        alert('Pengembalian dikonfirmasi.');
+      </script>
+      ";
+    }
+    else
+     echo " <script>
+        alert('Pengembalian gagal dikonfirmasi');
+      </script>
+      ";
+  }
+  $products = query("SELECT * FROM products");     
+    $ordersc = query("SELECT * FROM orders WHERE status='CART'");
+  $ordersb = query("SELECT * FROM orders WHERE status='BELUM DIAMBIL'");
+  $orderss = query("SELECT * FROM orders WHERE status='BELUM DIKEMBALIKAN'");
+  $history = query("SELECT * FROM orders WHERE status='SUKSES'"); 
+  
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,18 +94,9 @@
         <div class="collapse navbar-collapse" id="ftco-nav">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item active"><a href="index.php" class="nav-link">Home</a></li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown04">
-                <a class="dropdown-item" href="shop.html">Shop</a>
-                <a class="dropdown-item" href="product-single.html">Single Product</a>
-                <a class="dropdown-item" href="cart.html">Cart</a>
-                <a class="dropdown-item" href="checkout.html">Checkout</a>
-              </div>
-            </li>
-            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-            <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-            <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            <li class="nav-item"><a href="shop.php" class="nav-link">Shop</a></li>
+            <li class="nav-item"><a href="index.php#bio" class="nav-link">About</a></li>
+            <li class="nav-item"><a href="index.php#kontak" class="nav-link">Contact</a></li>
             <li class="nav-item cta cta-colored"><a href=<?php  if (isset($_SESSION['login'])) {
         echo "profile.php";
       } 
@@ -107,7 +129,126 @@
       </div>
     </div>
 		
-		<section class="ftco-section ftco-cart">
+    <section class="ftco-section ftco-cart" id="belum">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 ftco-animate" >
+            <div class="cart-list">
+              <table class="table">
+                <thead class="thead-primary">
+                  <tr class="text-center">
+                    <th>Belum diambil</th>
+                    <th>Product</th>
+                    <th>User</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($ordersb as $order):?>
+                  <?php
+                    $product_id = $order['product_id'];
+                    $query = "SELECT * FROM products WHERE product_id='$product_id'";
+                    $result = mysqli_query($db_users,$query);
+                    $product = mysqli_fetch_assoc($result);
+                    $order_id = $order['order_id'];
+                    $product_name = $product['product_name'];
+                    $product_bio = $product['product_bio'];
+                    $product_price = $product['product_price'];
+                    $quantity = $order['quantity'];
+                    $username = $order['username'];
+                  ?>
+                  <form action="" method="POST">
+                  <tr class="text-center" style="padding: 2px !important">
+                    <!-- <td class="product-remove"><button class="btnaing" name="pengembalian">HAPUS</button></a></td> -->
+                    <input type="hidden" name="order_id" value="<?php echo "$order_id" ?>"/>
+                    <td><button class="btnaing" name="pengambilan" style="padding: 2px 15px !important;">Konfirmasi Pengambilan</button></td>
+                    
+                    <td class="product-name">
+                      <h3><?= $product['product_name']?></h3>
+                    </td>
+                    <td> <?php echo"$username";?></td>
+                    <!-- <input type="hidden" name="product_id" value="<?php echo "$product_id" ?>"/>
+                    <input type="hidden" name="username" value="<?php echo "$username" ?>"/> -->
+                    <td class="price">IDR <?= $product['product_price']?></td>
+                    
+                    <td class="quantity">
+                      <?php echo "$quantity" ?>
+                    </td>
+                    <!-- <td class="total"><button class="btnaing" name="book">BOOKING</button></td> -->
+                  </tr>
+                  </form>
+                  <?php endforeach; ?>
+                  <!-- END TR-->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section ftco-cart" id="belumdikembalikan">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 ftco-animate" >
+            <div class="cart-list">
+              <table class="table">
+                <thead class="thead-primary">
+                  <tr class="text-center">
+                    <th>Belum dikembalikan</th>
+                    <th>Product</th>
+                    <th>User</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($orderss as $order):?>
+                  <?php
+                    $product_id = $order['product_id'];
+                    $query = "SELECT * FROM products WHERE product_id='$product_id'";
+                    $result = mysqli_query($db_users,$query);
+                    $product = mysqli_fetch_assoc($result);
+                    $order_id = $order['order_id'];
+                    $product_name = $product['product_name'];
+                    $product_bio = $product['product_bio'];
+                    $product_price = $product['product_price'];
+                    $quantity = $order['quantity'];
+                    $username = $order['username'];
+                  ?>
+                  <form action="" method="POST">
+                  <tr class="text-center">
+                    <!-- <td class="product-remove"><button class="btnaing" name="hapus">HAPUS</button></a></td> -->
+                    <input type="hidden" name="order_id" value="<?php echo "$order_id" ?>"/>
+                    <td><button class="btnaing" name="pengembalian" style="padding: 2px 15px !important;">Konfirmasi Pengembalian</button></td>
+                    
+                    <td class="product-name">
+                      <h3><?= $product['product_name']?></h3>
+                    </td>
+                    <td> <?php echo"$username";?></td>
+                    <!-- <input type="hidden" name="product_id" value="<?php echo "$product_id" ?>"/>
+                    <input type="hidden" name="username" value="<?php echo "$username" ?>"/> -->
+                    <td class="price">IDR <?= $product['product_price']?></td>
+                    
+                    <td class="quantity">
+                      <?php echo "$quantity" ?>
+                    </td>
+                    <!-- <td class="total"><button class="btnaing" name="book">BOOKING</button></td> -->
+                  </tr>
+                  </form>
+                  <?php endforeach; ?>
+                  <!-- END TR-->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+		<!-- <section class="ftco-section ftco-cart">
 			<div class="container">
 				<div class="row">
     			<div class="col-md-12 ftco-animate" id="orders">
@@ -125,7 +266,7 @@
 						    </thead>
 						    <tbody>
 						      <tr class="text-center">
-						        <td class="product-status"><a href="#">Konfirmasi Pengambilan</a></td>
+						        <td class="product-status"></td>
 						        
 						        <td class="product-name">
 						        	<h3>Young Woman Wearing Dress</h3>
@@ -137,7 +278,7 @@
 					          	<td><p>username</p></td>
 					          	<td><p>Barang belum diambil</p></td>
 						        
-						      </tr><!-- END TR-->
+						      </tr>
 						      <tr class="text-center">
 						        <td class="product-status"><a href="#">Konfirmasi Pengembalian</a></td>
 						        
@@ -158,7 +299,7 @@
     			</div>
     		</div>
 			</div>
-		</section>
+		</section> -->
 
 		<section class="ftco-section ftco-cart">
 			<div class="container">
@@ -237,7 +378,64 @@
 			</div>
 	</section>
 
-    <section class="ftco-section ftco-cart">
+  <section class="ftco-section ftco-cart" id="history">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 ftco-animate" >
+            <div class="cart-list">
+              <table class="table">
+                <thead class="thead-primary">
+                  <tr class="text-center">
+                    <th>History</th>
+                    <th>Product</th>
+                    <th>User</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($history as $order):?>
+                  <?php
+                    $product_id = $order['product_id'];
+                    $query = "SELECT * FROM products WHERE product_id='$product_id'";
+                    $result = mysqli_query($db_users,$query);
+                    $product = mysqli_fetch_assoc($result);
+                    $order_id = $order['order_id'];
+                    $product_name = $product['product_name'];
+                    $product_bio = $product['product_bio'];
+                    $product_price = $product['product_price'];
+                    $quantity = $order['quantity'];
+                    $username = $order['username'];
+                  ?>
+                  <tr class="text-center">
+                    <!-- <td class="product-remove"><button class="btnaing" name="hapus">HAPUS</button></a></td>
+                    <input type="hidden" name="order_id" value="<?php echo "$order_id" ?>"/> -->
+                    <td><br></td>
+                    <td class="product-name">
+                      <h3><?= $product['product_name']?></h3>
+                    </td>
+                    <td> <?php echo"$username";?></td>
+                    <!-- <input type="hidden" name="product_id" value="<?php echo "$product_id" ?>"/>
+                    <input type="hidden" name="username" value="<?php echo "$username" ?>"/> -->
+                    <td class="price">IDR <?= $product['product_price']?></td>
+                    
+                    <td class="quantity">
+                      <?php echo "$quantity" ?>
+                    </td>
+                    <!-- <td class="total"><button class="btnaing" name="book">BOOKING</button></td> -->
+                  </tr>
+                  <?php endforeach; ?>
+                  <!-- END TR-->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+     <!-- <section class="ftco-section ftco-cart">
       <div class="container">
         <div class="row">
           <div class="col-md-12 ftco-animate" id="history">
@@ -273,14 +471,14 @@
                     
                     <td class="total">$15.70</td>
                     <td>Success</td>
-                  </tr><!-- END TR-->
+                  </tr>END TR
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
     
 		

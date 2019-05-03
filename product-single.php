@@ -1,6 +1,9 @@
 <?php 
   session_start();
   require 'functions.php';
+  if(!isset($_GET)){
+    header("Location: shop.php");
+  }
   $id = $_GET['product_id'];
   $query = "SELECT * FROM products WHERE product_id='$id'";
   $result = mysqli_query($db_users,$query);

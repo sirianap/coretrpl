@@ -82,25 +82,16 @@
     					<a href="product-single.php?product_id=<?php echo "$product_id" ?>" class="img-prod"><img class="img-fluid" src="images/<?php echo "$image" ?>" alt="<?php echo "$name" ?>" style="height:400px;width: 100% ">
     					</a>
     					<div class="text py-3 px-3">
-    						<h3><a href="#"><?php echo "$name" ?></h3>
+    						<h3><a href="product-single.php?product_id=<?php echo "$product_id" ?>"><?php echo "$name" ?></h3>
     						<div class="d-flex">
     							<div class="pricing">
 		    						<p class="price"><span>IDR <?php echo "$price"?></span></p>
 		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
 	    					</div>
 	    					<hr>
     						<p class="bottom-area d-flex">
     							<a href="product-single.php?product_id=<?php echo "$product_id" ?>" class="add-to-cart"><span><i class="ion-ios-add ml-1"></i>   Rent This!</span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
+    							<a href="product-single.php?product_id=<?php echo "$product_id" ?>" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
     						</p>
     					</div>
     				</div>

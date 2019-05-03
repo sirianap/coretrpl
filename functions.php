@@ -139,4 +139,40 @@ function cart($data){
   $result = mysqli_query($db_root,$query);
   return mysqli_affected_rows($db_root);
 }
+function hapuscart($data){
+  global $db_root;
+  $order_id = $data['order_id'];
+  $query = "DELETE FROM orders 
+            WHERE
+            order_id = '$order_id'
+            ";
+  mysqli_query($db_root,$query);
+  return mysqli_affected_rows($db_root);
+}
+function booking($data){
+  global $db_root;
+  $order_id = $data['order_id'];
+  $quantity = $data['quantity'];
+  $query = "UPDATE orders SET quantity='$quantity',status='BELUM DIAMBIL' WHERE order_id='$order_id'
+            ";
+  mysqli_query($db_root,$query);
+  return mysqli_affected_rows($db_root);
+}
+function pengambilan($data){
+  global $db_root;
+  $order_id = $data['order_id'];
+  $query = "UPDATE orders SET status='BELUM DIKEMBALIKAN' WHERE order_id='$order_id'
+            ";
+  mysqli_query($db_root,$query);
+  return mysqli_affected_rows($db_root);
+}
+function pengembalian($data){
+  global $db_root;
+  $order_id = $data['order_id'];
+  $query = "UPDATE orders SET status='SUKSES' WHERE order_id='$order_id'
+            ";
+  mysqli_query($db_root,$query);
+  return mysqli_affected_rows($db_root);
+}
+
 ?>
